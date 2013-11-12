@@ -1,0 +1,51 @@
+$def with (CSVrows, currentMonth, Ltot_thisMonth, Dtot_thisMonth, Mtot_thisMonth, Ltot_All, Dtot_All, Mtot_All)
+
+<title>myFood2.0 - tabulated</title>
+$if CSVrows:
+	<table border="1">
+	<tr>
+		<th> Date </th>
+		<th> Lunch </th>
+		<th> Dinner </th>
+		<th> Miscellaneous </th>
+	</tr>
+	$for row in CSVrows:
+		<tr>
+			<td> $row[0] </td>
+			<td> $row[1] </td>
+			<td> $row[2] </td>
+			<td> $row[3] </td>
+		</tr>
+	</table>
+
+<p>
+$if Ltot_thisMonth or Dtot_thisMonth or Mtot_thisMonth:
+	<br> <i><u>CURRENT MONTH TOTALS:</u></i> </br>
+<br>
+$if Ltot_thisMonth:
+	Lunch total for this month ($currentMonth) = &#36;$Ltot_thisMonth
+</br>
+<br>
+$if Dtot_thisMonth:
+	Dinner total for this month ($currentMonth) = &#36;$Dtot_thisMonth
+</br>
+<br>
+$if Mtot_thisMonth:
+	Miscellaneous total for this month ($currentMonth) = &#36;$Mtot_thisMonth
+</br>
+<br></br>
+$if Ltot_All or Dtot_All or Mtot_All:
+	<br> <i><u>ALL MONTH TOTALS:</u></i> </br>
+<br>
+$if Ltot_All:
+	Lunch total for all months = &#36;$Ltot_All
+</br>
+<br>
+$if Dtot_All:
+	Dinner total for all months = &#36;$Dtot_All
+</br>
+<br>
+$if Mtot_All:
+	Miscellaneous total for all months = &#36;$Mtot_All
+</br>
+</p>
