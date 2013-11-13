@@ -26,17 +26,18 @@ foodForm = form.Form(
 	form.Textbox('Clear? (y/n)')
 )
 
-session = web.session.Session(app, web.session.DiskStore('sessions'))
+#session = web.session.Session(app, web.session.DiskStore('sessions'))
+myUserDict = web.session.Session(app, web.session.DiskStore('userdicts'))
 
 userList = []
-myUserDict = dict()
-myUserDict = {
-	'username': '',
-	'dateList': [],
-	'lunchList': [],
-	'dinnerList': [],
-	'miscList': []
-}
+#myUserDict = dict()
+#myUserDict = {
+myUserDict['username'] = ''
+myUserDict['dateList'] = []
+myUserDict['lunchList'] = []
+myUserDict['dinnerList'] = []
+myUserDict['miscList'] = []
+#}
 
 #userList = []
 #dateList = []
@@ -85,8 +86,10 @@ class index:
 		
 			else:
 				if form['User name'].value in myUserDict.values():
-					#print "yes"
-				
+					print "yes"
+			
+				print "myUserDict: %s" % myUserDict
+	
 				myUserDict['username'] = form['User name'].value	
 				if not myUserDict['username'] in userList:
 					userList.append(myUserDict['username'])
