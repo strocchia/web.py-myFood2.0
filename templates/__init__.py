@@ -15,6 +15,10 @@ def init_form (form):
     extend_([u'</form>\n'])
     extend_([u'\n'])
     extend_([u'Go to <a href="/getcsv">myfood-2p0.appspot.com/getcsv</a> to retrieve a compiled CSV file of your meal expenses.\n'])
+    extend_([u'\n'])
+    extend_([u'<br></br>\n'])
+    extend_([u'<br></br>\n'])
+    extend_([u'<font size="2">&copy; <i>Scott Trocchia (2013)</i> </font>\n'])
 
     return self
 
