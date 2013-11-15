@@ -31,23 +31,13 @@ foodForm = form.Form(
 #myUserDict = web.session.Session(app, web.session.DiskStore('userdicts'))
 #user_store = web.session.Session(app, web.session.DiskStore('user_store'))
 
-#userList = []
-#myUserDict = dict()
-#myUserDict = {
-#myUserDict['username'] = ''
-#myUserDict['dateList'] = []
-#myUserDict['lunchList'] = []
-#myUserDict['dinnerList'] = []
-#myUserDict['miscList'] = []
-#}
+#fromform = dict()
+#fromform['mealType'] = ''
+#fromform['chosen_month'] = ''
 
 double_dict = defaultdict(dict)
 userList = []
 CSVrows = []
-
-#fromform = dict()
-#fromform['mealType'] = ''
-#fromform['chosen_month'] = ''
 
 Ltot_thisMonth = 0.0
 Dtot_thisMonth = 0.0
@@ -83,44 +73,64 @@ class index:
 				return render.init_form(form)
 		
 			else:
+				# saving convenient values to make it easier to reference them in future parts of the code
+				username = form['User name'].value
 				mealType= form['Which meal?'].value
 				chosen_month  = form['Month'].value
-				
+				LDM = float(form['Lunch, Dinner, or Miscellaneous $'].value)
+
 				currentMonth = datetime.datetime.now().month
 				monthDict={1:'January', 2:'February', 3:'March', 4:'April', 5:'May', 6:'June', 7:'July', 8:'August', 9:'September', 10:'October', 11:'November', 12:'December'}
 				currentMonth = monthDict[currentMonth]
-	
-				print double_dict
+				
+				joined_date = ' '.join([chosen_month, form['Day'].value, form['Year'].value])	
 
-				#if form['User name'].value in myUserDict.values():
-				#	print "yes"
-			
-				#print "myUserDict: %s" % myUserDict
-	
+				print 'DD b4: %s' % double_dict
+
+				if username not in double_dict:
+					# create the nested dict fields
+					double_dict[username]['dateList'] = []
+					double_dict[username]['lunchList'] = []
+					double_dict[username]['dinnerList'] = []
+					double_dict[username]['miscList'] = []
+					double_dict[username]['Ltot_All'] = ['0']
+				else:
+					print "User already exists!"
+				
+				# add to those fields
+				if not joined_date in double_dict[username]['dateList']:
+					double_dict[username]['dateList'].append(joined_date)
+				if mealType == "Lunch":
+					double_dict[username]['lunchList'].append(LDM)
+					last_L_entry = float(double_dict[username]['Ltot_All'][-1])
+					#print last_L_entry
+					double_dict[username]['Ltot_All'].append(str(last_L_entry + LDM))
+				elif mealType == "Dinner":
+					double_dict[username]['dinnerList'].append(LDM)
+				else:
+					double_dict[username]['miscList'].append(LDM)
+
+				print 'DD after: %s' % double_dict
+
 				#myUserDict['username'] = form['User name'].value	
 				#if not myUserDict['username'] in userList:
 				#	userList.append(myUserDict['username'])
 
-				if mealType == 'Lunch':
+				#if mealType == 'Lunch':
 					#lunchList.append(LDM)
-					Ltot_All += LDM
-					if chosen_month == currentMonth:
-						Ltot_thisMonth += LDM
-				elif mealType == 'Dinner':
-					#dinnerList.append(LDM)
-					Dtot_All += LDM
-					if chosen_month == currentMonth:
-						Dtot_thisMonth += LDM
-				else:
-					#miscList.append(LDM)
-					Mtot_All += LDM
-					if chosen_month == currentMonth:
-						Mtot_thisMonth += LDM
-
-				joined_date = ' '.join([form['Month'].value, form['Day'].value, form['Year'].value])	
-
-				#if not joined_date in dateList:
-					#dateList.append(joined_date)
+				#	Ltot_All += LDM
+				#	if chosen_month == currentMonth:
+				#		Ltot_thisMonth += LDM
+				#elif mealType == 'Dinner':
+				#	#dinnerList.append(LDM)
+				#	Dtot_All += LDM
+				#	if chosen_month == currentMonth:
+				#		Dtot_thisMonth += LDM
+				#else:
+				#	#miscList.append(LDM)
+				#	Mtot_All += LDM
+				#	if chosen_month == currentMonth:
+				#		Mtot_thisMonth += LDM
 
 				#CSVrows = map(None, dateList, lunchList, dinnerList, miscList)
 	
@@ -149,14 +159,5 @@ class getcsv:
 		web.header('Content-disposition', 'attachment; filename=myFood_' + currentDate + '.csv')			
 		return csv_file.getvalue()
 
-
-#class userI:
-#
-#	def GET(self):
-#		i = web.input(name = None)
-#		print i.name
-#		return 'Hello, ' + i.name
-#		#return 'Hello, ' + web.websafe(i['name']) + '!'
-#		#return 'Hello, ' + web.websafe(name) + '!'
 
 app = app.gaerun()
