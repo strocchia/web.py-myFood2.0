@@ -5,6 +5,7 @@ import datetime
 import time
 import csv
 from StringIO import StringIO
+from collections import defaultdict
 
 urls = (
 	"/", "index",
@@ -28,7 +29,7 @@ foodForm = form.Form(
 
 #session = web.session.Session(app, web.session.DiskStore('sessions'))
 #myUserDict = web.session.Session(app, web.session.DiskStore('userdicts'))
-user_store = web.session.Session(app, web.session.DiskStore('user_store'))
+#user_store = web.session.Session(app, web.session.DiskStore('user_store'))
 
 #userList = []
 #myUserDict = dict()
@@ -40,6 +41,7 @@ user_store = web.session.Session(app, web.session.DiskStore('user_store'))
 #myUserDict['miscList'] = []
 #}
 
+double_dict = defaultdict(dict)
 userList = []
 CSVrows = []
 
@@ -88,10 +90,8 @@ class index:
 				monthDict={1:'January', 2:'February', 3:'March', 4:'April', 5:'May', 6:'June', 7:'July', 8:'August', 9:'September', 10:'October', 11:'November', 12:'December'}
 				currentMonth = monthDict[currentMonth]
 	
-				user = form['User name'].value
-				if mealType == 'Lunch':
-					user_store[lunchList].append('5')
-				
+				print double_dict
+
 				#if form['User name'].value in myUserDict.values():
 				#	print "yes"
 			
