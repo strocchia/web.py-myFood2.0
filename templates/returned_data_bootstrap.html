@@ -1,0 +1,48 @@
+$def with (currentMonth, CSVrows, Ltot_thisMonth, Dtot_thisMonth, Mtot_thisMonth, Ltot_All, Dtot_All, Mtot_All)
+
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+	<meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta name="description" content="">
+        <meta name="author" content="">
+        <link rel="shortcut icon" href="../static/ico/favicon.png">
+                            
+        <title>myFood2.0 - tabulated</title>
+                            
+        <!-- Bootstrap core CSS -->
+        <link href="../static/css/bootstrap.css" rel="stylesheet">
+                                    
+        <style type="text/css">
+                .table-example{
+                    margin: 20px;
+                }
+        </style>
+	</head>
+
+	<body>
+    	<div class="table-example">
+        	<table class="table table-striped">
+            		<thead>
+                		<tr>
+                    		<th>Date</th>
+                    		<th>Lunch</th>
+                    		<th>Dinner</th>
+                    		<th>Miscellaneous</th>
+                		</tr>
+            		</thead>
+            		<tbody>
+                	$for row in CSVrows:
+                		<tr>
+                    		<td>$row[0]</td>
+                    		<td>$row[1]</td>
+                    		<td>$row[2]</td>
+                    		<td>$row[3]</td>
+                		</tr>
+            		</tbody>
+        	</table>
+    	</div>
+    </body>
+    
+</html>

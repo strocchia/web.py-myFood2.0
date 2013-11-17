@@ -1,13 +1,16 @@
-$def with (form)
+$def with (form, clearMessage)
 
 <title>myFood2.0 - form</title>
 
 <form name="main" method="post">
 $:form.render()
 <input type="submit" />
+$if clearMessage: 
+	$clearMessage
 </form>
 
-Go to <a href="/getcsv">myfood-2p0.appspot.com/getcsv</a> to retrieve a compiled CSV file of your meal expenses.
+<br></br>
+After entering data, go to <a href="/getcsv">myfood2p0.appspot.com/getcsv</a> to retrieve a personalized CSV file of your meal expenses.
 
 <br></br>
 <br></br>
