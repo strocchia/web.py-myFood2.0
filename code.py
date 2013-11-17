@@ -61,7 +61,7 @@ class index:
 				
 				joined_date = ' '.join([chosen_month, form['Day'].value, form['Year'].value])	
 
-				print 'DD b4: %s' % users_store['double_dict']
+				print 'DD b4: %s' % double_dict
 
 				if not user in double_dict:
 					### create the nested dict fields
@@ -113,7 +113,7 @@ class index:
 		return render.init_form(form, "")
 
 
-''' Render and generate a CSV file, which includes all user input information up to this point in time '''
+### --> Render and generate a CSV file, which includes all user input information up to this point in time
 class getcsv:
 
 	def GET(self):
