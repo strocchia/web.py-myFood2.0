@@ -24,7 +24,8 @@ foodForm = form.Form(
 	form.Dropdown('Day', ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12', '13', '14', '15', '16', '17', '18', '19', '20', '21', '22', '23', '24', '25', '26', '27', '28', '29', '30', '31']),
 	form.Dropdown('Year', ['2013', '2014', '2015', '2016']),
         form.Textbox('Lunch, Dinner, or Miscellaneous $'),
-	form.Textbox('Clear? (y/n)')
+	form.Textbox('Clear? (y/n)'),
+	form.Button('Submit')
 )
 
 #users_store = web.session.Session(app, web.session.DiskStore('users_store'), initializer={'double_dict': defaultdict(dict)})

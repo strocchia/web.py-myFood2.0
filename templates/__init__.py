@@ -11,11 +11,12 @@ def init_form (form, clearMessage):
     extend_([u'\n'])
     extend_([u'<form name="main" method="post">\n'])
     extend_([escape_(form.render(), False), u'\n'])
-    extend_([u'<input type="submit" />\n'])
-    if clearMessage:
-        extend_([u'    ', escape_(clearMessage, True), u'\n'])
+    extend_([u'<!--input type="submit" /-->\n'])
     extend_([u'</form>\n'])
     extend_([u'\n'])
+    if clearMessage:
+        extend_([u'    <b>', escape_(clearMessage, True), u'</b>\n'])
+        extend_([u'\n'])
     extend_([u'<br></br>\n'])
     extend_([u'After entering data, go to <a href="/getcsv">myfood2p0.appspot.com/getcsv</a> to retrieve a personalized CSV file of your meal expenses.\n'])
     extend_([u'\n'])
