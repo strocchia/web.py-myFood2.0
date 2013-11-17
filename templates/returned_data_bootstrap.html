@@ -3,46 +3,77 @@ $def with (currentMonth, CSVrows, Ltot_thisMonth, Dtot_thisMonth, Mtot_thisMonth
 <!DOCTYPE html>
 <html lang="en">
 	<head>
-	<meta charset="utf-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <meta name="description" content="">
-        <meta name="author" content="">
-        <link rel="shortcut icon" href="../static/ico/favicon.png">
+		<meta charset="utf-8">
+        	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+        	<meta name="description" content="">
+        	<meta name="author" content="">
+        	<!--link rel="shortcut icon" href="../static/img/favicon.png"-->
                             
-        <title>myFood2.0 - tabulated</title>
+        	<title>myFood2.0 - tabulated</title>
                             
-        <!-- Bootstrap core CSS -->
-        <link href="../static/css/bootstrap.css" rel="stylesheet">
+        	<!-- Bootstrap core CSS -->
+		<link href="../static/bootstrap/css/bootstrap.css" rel="stylesheet">
                                     
-        <style type="text/css">
-                .table-example{
-                    margin: 20px;
-                }
-        </style>
+        	<style type="text/css">
+                	.bs-example{
+                    		margin: 20px;
+                	}
+        	</style>
 	</head>
-
 	<body>
-    	<div class="table-example">
-        	<table class="table table-striped">
-            		<thead>
-                		<tr>
-                    		<th>Date</th>
-                    		<th>Lunch</th>
-                    		<th>Dinner</th>
-                    		<th>Miscellaneous</th>
-                		</tr>
-            		</thead>
-            		<tbody>
-                	$for row in CSVrows:
-                		<tr>
-                    		<td>$row[0]</td>
-                    		<td>$row[1]</td>
-                    		<td>$row[2]</td>
-                    		<td>$row[3]</td>
-                		</tr>
-            		</tbody>
-        	</table>
-    	</div>
-    </body>
-    
+    			<div class="bs-example">
+        			<table class="table table-striped">
+            				<thead>
+                				<tr>
+                    				<th>Date</th>
+                    				<th>Lunch</th>
+                    				<th>Dinner</th>
+                    				<th>Miscellaneous</th>
+                				</tr>
+            				</thead>
+            				<tbody>
+                			$for row in CSVrows:
+                				<tr>
+                    				<td>$row[0]</td>
+                    				<td>$row[1]</td>
+                    				<td>$row[2]</td>
+                    				<td>$row[3]</td>
+                				</tr>
+            				</tbody>
+        			</table>
+
+				$if Ltot_thisMonth or Dtot_thisMonth or Mtot_thisMonth:
+            				<br> <i><u>CURRENT MONTH TOTALS:</u></i> </br>
+        			<br>
+        			$if Ltot_thisMonth:
+            				Lunch total for this month ($currentMonth) = &#36;$Ltot_thisMonth
+        			</br>
+        			<br>
+        			$if Dtot_thisMonth:
+            				Dinner total for this month ($currentMonth) = &#36;$Dtot_thisMonth
+        			</br>
+        			<br>
+        			$if Mtot_thisMonth:
+            				Miscellaneous total for this month ($currentMonth) = &#36;$Mtot_thisMonth
+        			</br>
+        			<br></br>
+        			$if Ltot_All or Dtot_All or Mtot_All:
+            				<br> <i><u>ALL MONTH TOTALS:</u></i> </br>
+        			<br>
+        			$if Ltot_All:
+           		 		Lunch total for all months = &#36;$Ltot_All
+        			</br>
+        			<br>
+        			$if Dtot_All:
+            				Dinner total for all months = &#36;$Dtot_All
+        			</br>
+        			<br>
+        			$if Mtot_All:
+            				Miscellaneous total for all months = &#36;$Mtot_All
+        			</br>
+        			</p>
+			</div>
+		<script src="../static/bootstrap/js/jquery.js"></script>	
+		<script src="../static/bootstrap/js/bootstrap.min.js"></script>
+    	</body>
 </html>
