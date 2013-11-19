@@ -38,18 +38,33 @@ class index:
 		
 		allFormInputs = web.input()
 
-		global user
+		global user, clearFlag
+		clearFlag = 0
 		clearMessage = ""
 
+		user = allFormInputs.Username
+
 		if allFormInputs.Clear == 'y':
-			double_dict.clear()
+			double_dict[user].clear()
+			clearFlag = 1
+			double_dict[user]['dateList'] = []
+			double_dict[user]['lunchList'] = []
+			double_dict[user]['dinnerList'] = []
+			double_dict[user]['miscList'] = []
+			double_dict[user]['CSVrows'] = []
+			double_dict[user]['Ltot_thisMonth'] = 0.00
+			double_dict[user]['Dtot_thisMonth'] = 0.00
+			double_dict[user]['Mtot_thisMonth'] = 0.00
+			double_dict[user]['Ltot_All'] = 0.00
+			double_dict[user]['Dtot_All'] = 0.00
+			double_dict[user]['Mtot_All'] = 0.00
 			clearMessage = "Your personal meal expense database is cleared!"
+			print "DD after clear: %s" % double_dict
 			return render.init_form_bootstrap(clearMessage)	
 
 		else:
 		### saving convenient values to make it easier to reference them in future parts of the code
 			
-			user = allFormInputs.Username
 			mealType = allFormInputs.Whichmeal
 			chosen_month = allFormInputs.Month
 			LDM = allFormInputs.LDM
@@ -115,9 +130,9 @@ class getcsv:
 
 	def GET(self):
 
-		global user
+		global user, clearFlag
 
-		if len(double_dict) == 0:
+		if clearFlag == 1:
  			raise web.seeother('/nothingInCSV')
 		else:
 			csv_file = StringIO()
