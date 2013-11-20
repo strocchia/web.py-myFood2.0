@@ -104,19 +104,23 @@ $def with (clearMessage)
 		<input type="tel" name="LDM" class="form-control" placeholder="Enter money spent for particular meal">
             </div>
 	    <div class="form-group">
-		<label for="Clear">Clear? (y/n)</label>
-		<input type="text" name="Clear" class="form-control" placeholder="Enter 'y' or 'n' (without quotes)">
+		<input type="submit" name="buttonDo" value="Submit" class="btn btn-primary">
+		<input type="submit" name="buttonDo" value="Clear your database" class="btn btn-primary">
+		<input type="submit" name="buttonDo" value="Undo last entry" class="btn btn-primary">
 	    </div>
-	    <div class="form-group">
-		<button type="submit" name="Submit" class="btn btn-primary">Submit</button>
-	    </div>
-            
+
 	    $if clearMessage: 
             	<b>$clearMessage</b>
-            
+	    
+	    <br></br>            
             <br></br>
-            After entering data, go to <a href="/getcsv">myfood2p0.appspot.com/getcsv</a> to retrieve a personalized CSV file of your meal expenses.
-            
+            <b>INSTRUCTIONS:</b> 
+	    <br>- Submit: submits your entire form
+	    <br>-- Clear: clears your entire database
+ 	    <br>--- Undo: clears the last entry for a particular chosen meal type
+	    <!--br></br-->
+	    <br> After entering data, go to <a href="/getcsv">myfood2dot0.appspot.com/getcsv</a> to retrieve a personalized CSV file of your meal expenses.
+
             <br></br>
             <br></br>
             <font size="2">&copy; <i>Scott Trocchia (2013)</i> </font>

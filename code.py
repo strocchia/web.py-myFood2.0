@@ -17,17 +17,6 @@ render = web.template.render('templates/')
 
 app = web.application(urls, globals())
 
-#foodForm = form.Form(
-#	form.Textbox('User name', web.form.notnull),
-#	form.Dropdown('Which meal?', ['Lunch', 'Dinner', 'Miscellaneous']),
-#	form.Dropdown('Month', ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']),
-#	form.Dropdown('Day', ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12', '13', '14', '15', '16', '17', '18', '19', '20', '21', '22', '23', '24', '25', '26', '27', '28', '29', '30', '31']),
-#	form.Dropdown('Year', ['2013', '2014', '2015', '2016']),
-#       form.Textbox('Lunch, Dinner, or Miscellaneous $'),
-#	form.Textbox('Clear? (y/n)'),
-#	form.Button('Submit')
-#)
-
 #users_store = web.session.Session(app, web.session.DiskStore('users_store'), initializer={'double_dict': defaultdict(dict)})
 
 double_dict = defaultdict(dict)
@@ -35,18 +24,27 @@ double_dict = defaultdict(dict)
 class index:
 
 	def POST(self):
-		
 		allFormInputs = web.input()
+		print allFormInputs
 
-		global user, clearFlag
+		global user, clearFlag, undoFlag
 		clearFlag = 0
 		clearMessage = ""
 
 		user = allFormInputs.Username
+		mealType = allFormInputs.Whichmeal
+		chosen_month = allFormInputs.Month	
+		currentMonth = datetime.datetime.now().month
+		monthDict={1:'January', 2:'February', 3:'March', 4:'April', 5:'May', 6:'June', 7:'July', 8:'August', 9:'September', 10:'October', 11:'November', 12:'December'}
+		currentMonth = monthDict[currentMonth]
 
-		if allFormInputs.Clear == 'y':
-			double_dict[user].clear()
+		print ""	
+		print "DD immediately after POST called: %s" % double_dict
+
+		if allFormInputs.buttonDo == "Clear your database":
+			print "In the clear"
 			clearFlag = 1
+			double_dict[user].clear()
 			double_dict[user]['dateList'] = []
 			double_dict[user]['lunchList'] = []
 			double_dict[user]['dinnerList'] = []
@@ -62,17 +60,44 @@ class index:
 			print "DD after clear: %s" % double_dict
 			return render.init_form_bootstrap(clearMessage)	
 
+		elif allFormInputs.buttonDo == "Undo last entry":
+			
+			#if joined_date in double_dict[user]['dateList']:
+			#	double_dict[user]['dateList'] = double_dict[user]['dateList'][:-1]
+
+			if mealType == "Lunch":
+				print "Undo lunch phase"
+				last_L_entry = float(double_dict[user]['Ltot_All'])
+				double_dict[user]['lunchList'] = double_dict[user]['lunchList'][:-1]
+				double_dict[user]['Ltot_All'] -= last_L_entry
+				if chosen_month == currentMonth:
+					double_dict[user]['Ltot_thisMonth'] -= last_L_entry
+			if mealType == "Dinner":
+				print "undo dinner phase"
+				last_D_entry = float(double_dict[user]['Dtot_All'])
+				double_dict[user]['dinnerList'] = double_dict[user]['dinnerList'][:-1]
+				double_dict[user]['Dtot_All'] -= last_D_entry
+				if chosen_month == currentMonth:
+					double_dict[user]['Dtot_thisMonth'] -= last_D_entry
+			if mealType == "Misc":
+				print "undo misc phase"
+				last_M_entry = float(double_dict[user]['Mtot_All'])
+				double_dict[user]['miscList'] = double_dict[user]['miscList'][:-1]
+				double_dict[user]['Mtot_All'] -= last_M_entry
+				if chosen_month == currentMonth:
+					double_dict[user]['Mtot_thisMonth'] -= last_M_entry
+
+			double_dict[user]['CSVrows'] = map(None, double_dict[user]['dateList'], double_dict[user]['lunchList'], double_dict[user]['dinnerList'], double_dict[user]['miscList'])
+	
+			return render.returned_data_bootstrap(currentMonth, double_dict[user]['CSVrows'], double_dict[user]['Ltot_thisMonth'], double_dict[user]['Dtot_thisMonth'], double_dict[user]['Mtot_thisMonth'], double_dict[user]['Ltot_All'], double_dict[user]['Dtot_All'], double_dict[user]['Mtot_All'])
+			#return render.init_form_bootstrap("")
+	
 		else:
 		### saving convenient values to make it easier to reference them in future parts of the code
-			
-			mealType = allFormInputs.Whichmeal
-			chosen_month = allFormInputs.Month
-			LDM = allFormInputs.LDM
-			LDM = float(LDM)
 
-			currentMonth = datetime.datetime.now().month
-			monthDict={1:'January', 2:'February', 3:'March', 4:'April', 5:'May', 6:'June', 7:'July', 8:'August', 9:'September', 10:'October', 11:'November', 12:'December'}
-			currentMonth = monthDict[currentMonth]				
+			LDM = allFormInputs.LDM
+			LDM = float(LDM)	
+			
 			joined_date = ' '.join([chosen_month, allFormInputs.Day, allFormInputs.Year])
 
 			print 'DD b4: %s' % double_dict
@@ -94,6 +119,7 @@ class index:
 				print "User already exists!"
 			
 			### add to those fields
+			
 			if not joined_date in double_dict[user]['dateList']:
 				double_dict[user]['dateList'].append(joined_date)
 				
@@ -106,19 +132,20 @@ class index:
 				double_dict[user]['dinnerList'].append(LDM)
 				double_dict[user]['Dtot_All'] += LDM
 				if chosen_month == currentMonth:
-					double_dict[user]['Dtot_thisMonth'] += LDM
+					double_dict[user]['Dtot_thisMonth'] += LDM	
 			else:
 				double_dict[user]['miscList'].append(LDM)
 				double_dict[user]['Mtot_All'] += LDM
 				if chosen_month == currentMonth:
 					double_dict[user]['Mtot_thisMonth'] += LDM
-				
+			
 			print 'DD after: %s' % double_dict
 
 			double_dict[user]['CSVrows'] = map(None, double_dict[user]['dateList'], double_dict[user]['lunchList'], double_dict[user]['dinnerList'], double_dict[user]['miscList'])
 	
-			print 'CSVrows: %s' % double_dict[user]['CSVrows']
-				
+			print 'DD CSVrows: %s' % double_dict[user]['CSVrows']
+			print ""			
+		
 			return render.returned_data_bootstrap(currentMonth, double_dict[user]['CSVrows'], double_dict[user]['Ltot_thisMonth'], double_dict[user]['Dtot_thisMonth'], double_dict[user]['Mtot_thisMonth'], double_dict[user]['Ltot_All'], double_dict[user]['Dtot_All'], double_dict[user]['Mtot_All'])
 
 	def GET(self):
@@ -140,6 +167,7 @@ class getcsv:
 			csv_writer.writerow(['Date', 'Lunch', 'Dinner', 'Miscellaneous'])
 			for i in double_dict[user]['CSVrows']:
 				csv_writer.writerow(i)
+			### --> if 'undo' operation, write CSVrows instead:
 
 			currentDate = datetime.datetime.today().strftime('%m-%d-%Y')
 			web.header('Content-Type', 'text/csv')
