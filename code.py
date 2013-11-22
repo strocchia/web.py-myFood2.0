@@ -61,10 +61,6 @@ class index:
 			return render.init_form_bootstrap(clearMessage)	
 
 		elif allFormInputs.buttonDo == "Undo last entry":
-			
-			#if joined_date in double_dict[user]['dateList']:
-			#	double_dict[user]['dateList'] = double_dict[user]['dateList'][:-1]
-
 			if mealType == "Lunch":
 				print "Undo lunch phase"
 				last_L_entry = float(double_dict[user]['Ltot_All'])
@@ -79,7 +75,7 @@ class index:
 				double_dict[user]['Dtot_All'] -= last_D_entry
 				if chosen_month == currentMonth:
 					double_dict[user]['Dtot_thisMonth'] -= last_D_entry
-			if mealType == "Misc":
+			if mealType == "Miscellaneous":
 				print "undo misc phase"
 				last_M_entry = float(double_dict[user]['Mtot_All'])
 				double_dict[user]['miscList'] = double_dict[user]['miscList'][:-1]
@@ -90,7 +86,7 @@ class index:
 			double_dict[user]['CSVrows'] = map(None, double_dict[user]['dateList'], double_dict[user]['lunchList'], double_dict[user]['dinnerList'], double_dict[user]['miscList'])
 	
 			return render.returned_data_bootstrap(currentMonth, double_dict[user]['CSVrows'], double_dict[user]['Ltot_thisMonth'], double_dict[user]['Dtot_thisMonth'], double_dict[user]['Mtot_thisMonth'], double_dict[user]['Ltot_All'], double_dict[user]['Dtot_All'], double_dict[user]['Mtot_All'])
-			#return render.init_form_bootstrap("")
+			print "DD CSVrows after undo: %s" % double_dict[user]['CSVrows']
 	
 		else:
 		### saving convenient values to make it easier to reference them in future parts of the code
@@ -140,9 +136,9 @@ class index:
 					double_dict[user]['Mtot_thisMonth'] += LDM
 			
 			print 'DD after: %s' % double_dict
-
+			
 			double_dict[user]['CSVrows'] = map(None, double_dict[user]['dateList'], double_dict[user]['lunchList'], double_dict[user]['dinnerList'], double_dict[user]['miscList'])
-	
+				
 			print 'DD CSVrows: %s' % double_dict[user]['CSVrows']
 			print ""			
 		
@@ -167,8 +163,7 @@ class getcsv:
 			csv_writer.writerow(['Date', 'Lunch', 'Dinner', 'Miscellaneous'])
 			for i in double_dict[user]['CSVrows']:
 				csv_writer.writerow(i)
-			### --> if 'undo' operation, write CSVrows instead:
-
+						
 			currentDate = datetime.datetime.today().strftime('%m-%d-%Y')
 			web.header('Content-Type', 'text/csv')
 			web.header('Content-disposition', 'attachment; filename=MYFOOD_' + user.upper() + '_' + currentDate + '.csv')			
