@@ -43,11 +43,10 @@ class index:
 		currentMonth = datetime.datetime.now().month
 		monthDict={1:'January', 2:'February', 3:'March', 4:'April', 5:'May', 6:'June', 7:'July', 8:'August', 9:'September', 10:'October', 11:'November', 12:'December'}
 		currentMonth = monthDict[currentMonth]
-		
+		Month = monthDict[int(Month)]
+
 		print ""	
 		print "DD immediately after POST called: %s" % double_dict
-
-		print allFormInputs.buttonDo
 
 		if allFormInputs.buttonDo == "Clear your database":
 			print "In the clear"
