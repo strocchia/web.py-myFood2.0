@@ -1,16 +1,19 @@
 import web
-web.config.debug = False
 from web import form
+web.config.debug = False
 import datetime
 import time
 import csv
 from StringIO import StringIO
 from collections import defaultdict
+import json
+#import matplotlib
+#from matplotlib import pyplot, dates
+#from matplotlib.backends.backend_agg import FigureCanvasAgg as FigureCanvas
 
 urls = (
 	"/", "index",
-	"/getcsv", "getcsv",
-	"/nothingInCSV", "nothingInCSV"
+	"/getCSV", "getcsv"
 )
 
 render = web.template.render('templates/')
@@ -20,6 +23,8 @@ app = web.application(urls, globals())
 #users_store = web.session.Session(app, web.session.DiskStore('users_store'), initializer={'double_dict': defaultdict(dict)})
 
 double_dict = defaultdict(dict)
+trial_dates = []
+pyDates = []
 
 class index:
 
@@ -27,7 +32,8 @@ class index:
 		allFormInputs = web.input()
 		print allFormInputs
 
-		global user, clearFlag, undoFlag
+		global user 
+		#global clearFlag
 		clearFlag = 0
 		mealType = ""
 		
@@ -36,14 +42,14 @@ class index:
 		
 		chosen_date = allFormInputs.MDY
 		chosen_date = chosen_date.split('/')
-		Month = chosen_date[0]
+		month = chosen_date[0]
 		Day = chosen_date[1]
 		Year = chosen_date[2]		
 
 		currentMonth = datetime.datetime.now().month
-		monthDict={1:'January', 2:'February', 3:'March', 4:'April', 5:'May', 6:'June', 7:'July', 8:'August', 9:'September', 10:'October', 11:'November', 12:'December'}
+		monthDict={1:'Jan', 2:'Feb', 3:'Mar', 4:'Apr', 5:'May', 6:'Jun', 7:'Jul', 8:'Aug', 9:'Sep', 10:'Oct', 11:'Nov', 12:'Dec'}
 		currentMonth = monthDict[currentMonth]
-		Month = monthDict[int(Month)]
+		Month = monthDict[int(month)]
 
 		print ""	
 		print "DD immediately after POST called: %s" % double_dict
@@ -93,16 +99,19 @@ class index:
 
 			double_dict[user]['CSVrows'] = map(None, double_dict[user]['dateList'], double_dict[user]['lunchList'], double_dict[user]['dinnerList'], double_dict[user]['miscList'])
 	
-			return render.returned_data_bootstrap(currentMonth, double_dict[user]['CSVrows'], double_dict[user]['Ltot_thisMonth'], double_dict[user]['Dtot_thisMonth'], double_dict[user]['Mtot_thisMonth'], double_dict[user]['Ltot_All'], double_dict[user]['Dtot_All'], double_dict[user]['Mtot_All'])
+			return render.returned_data_bootstrap_jquery(currentMonth, double_dict[user]['CSVrows'], double_dict[user]['Ltot_thisMonth'], double_dict[user]['Dtot_thisMonth'], double_dict[user]['Mtot_thisMonth'], double_dict[user]['Ltot_All'], double_dict[user]['Dtot_All'], double_dict[user]['Mtot_All'])
 			print "DD CSVrows after undo: %s" % double_dict[user]['CSVrows']
 	
+		elif allFormInputs.buttonDo == "Get CSV":
+			print "get csv phase"
+			raise web.seeother('/getCSV')
+
 		else:
 		### saving convenient values to make it easier to reference them in future parts of the code
 			print "saving data phase"
 			LDM = allFormInputs.LDM
 			LDM = float(LDM)	
 			
-			#joined_date = ' '.join([chosen_month, allFormInputs.Day, allFormInputs.Year])
 			joined_date = ' '.join([Month, Day, Year])
 
 			print 'DD b4: %s' % double_dict
@@ -127,7 +136,7 @@ class index:
 			
 			if not joined_date in double_dict[user]['dateList']:
 				double_dict[user]['dateList'].append(joined_date)
-				
+			
 			if mealType == "Lunch":
 				double_dict[user]['lunchList'].append(LDM)
 				double_dict[user]['Ltot_All'] += LDM
@@ -152,8 +161,23 @@ class index:
 				
 			print 'DD CSVrows: %s' % double_dict[user]['CSVrows']
 			print ""			
+	
+			joined_date2 = datetime.datetime.strptime(' '.join([Month, Day, Year]), '%b %d %Y')
+			joined_date2 = int(time.mktime(joined_date2.timetuple())) * 1000 + 100000000
+			pyDates.append(joined_date2)
+
+			trial_date = datetime.datetime.today()
+			trial_date = int(time.mktime(trial_date.timetuple())) * 1000
+			trial_dates.append(trial_date)
 		
-			return render.returned_data_bootstrap(currentMonth, double_dict[user]['CSVrows'], double_dict[user]['Ltot_thisMonth'], double_dict[user]['Dtot_thisMonth'], double_dict[user]['Mtot_thisMonth'], double_dict[user]['Ltot_All'], double_dict[user]['Dtot_All'], double_dict[user]['Mtot_All'])
+			# debugging
+			print "trial dates: %s" % trial_dates
+			print "json trial dates: %s" % json.dumps(trial_dates)
+			print "pyDates: %s" % pyDates
+			print "json pyDates: %s" % json.dumps(pyDates)
+			print ""
+
+			return render.returned_data_bootstrap_jquery(month, Day, Year, pyDates, double_dict[user]['lunchList'], double_dict[user]['dinnerList'], double_dict[user]['miscList'], double_dict[user]['CSVrows'], double_dict[user]['Ltot_thisMonth'], double_dict[user]['Dtot_thisMonth'], double_dict[user]['Mtot_thisMonth'], double_dict[user]['Ltot_All'], double_dict[user]['Dtot_All'], double_dict[user]['Mtot_All'])
 
 	def GET(self):
 		return render.init_form_bootstrap_jquery(0)
@@ -163,30 +187,28 @@ class index:
 class getcsv:
 
 	def GET(self):
+		global user
+		
+		#global clearFlag
+		#singularFormInput = web.input()
+		#userLocal = singularFormInput.user
 
-		global user, clearFlag
-
-		if clearFlag == 1:
- 			raise web.seeother('/nothingInCSV')
-		else:
-			csv_file = StringIO()
-			csv_writer = csv.writer(csv_file)
-			csv_writer.writerow(['Date', 'Lunch', 'Dinner', 'Miscellaneous'])
-			for i in double_dict[user]['CSVrows']:
-				csv_writer.writerow(i)
+		#if clearFlag == 1:
+		#	nothingMessage = "You have not entered any data into your personal CSV file!"
+		#	return render.nothing_to_show(nothingMessage)
+		
+		#else:
+		csv_file = StringIO()
+		csv_writer = csv.writer(csv_file)
+		csv_writer.writerow(['Date', 'Lunch', 'Dinner', 'Miscellaneous'])
+		for i in double_dict[user]['CSVrows']:
+			csv_writer.writerow(i)
 						
-			currentDate = datetime.datetime.today().strftime('%m-%d-%Y')
-			web.header('Content-Type', 'text/csv')
-			web.header('Content-disposition', 'attachment; filename=MYFOOD_' + user.upper() + '_' + currentDate + '.csv')			
-			return csv_file.getvalue()
+		currentDate = datetime.datetime.today().strftime('%m-%d-%Y')
+		web.header('Content-Type', 'text/csv')
+		web.header('Content-disposition', 'attachment; filename=MYFOOD_' + user.upper() + '_' + currentDate + '.csv')	
+		return csv_file.getvalue()
 
 
-class nothingInCSV:
-
-	def GET(self):
-
-		nothingMessage = "You have not entered any data into your personal CSV file!"
-		return render.nothing_to_show(nothingMessage)
-
-
+#app = app.run()
 app = app.gaerun()

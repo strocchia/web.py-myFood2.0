@@ -58,6 +58,7 @@ $def with (clearFlag)
 				<input type="submit" name="buttonDo" value="Submit" class="btn btn-primary">
 				<input type="submit" name="buttonDo" value="Clear your database" class="btn btn-primary">
 				<input type="submit" name="buttonDo" value="Undo last entry" class="btn btn-primary">
+				<input type="submit" name="buttonDo" value="Get CSV" class="btn btn-primary">
 			</div>
 
 			$if clearFlag == 1:
@@ -69,7 +70,7 @@ $def with (clearFlag)
 			<br>- Submit: submits your entire form
 			<br>-- Clear: clears your entire personal database
 			<br>--- Undo: clears the last entry for a particular chosen meal type
-			<br> After entering data, go to <a href="/getcsv">myfood2dot0.appspot.com/getcsv</a> to retrieve a personalized CSV file of your meal expenses.
+			<br>---- Get CSV: retrieves a personalized CSV file of your meal expenses. Only push this button <i>after</i> you have entered at least one meal entry. 
 
 			<br></br>
 			<br></br>

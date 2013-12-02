@@ -1,0 +1,166 @@
+$def with (M, D, Y, pyDates, lunches, dinners, miscs, CSVrows, Ltot_thisMonth, Dtot_thisMonth, Mtot_thisMonth, Ltot_All, Dtot_All, Mtot_All)
+
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+        	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+        	<meta name="description" content="">
+        	<meta name="author" content="">
+        	<!--link rel="shortcut icon" href="../static/img/favicon.png"-->
+                            
+        	<title>myFood 2.0 - tabulated</title>
+                            
+        	<!-- Bootstrap core CSS -->
+		<link href="../static/bootstrap/css/bootstrap.css" rel="stylesheet">
+
+		<script language="javscript" type="text/javascript" src="../static/bootstrap/js/jquery.js"></script>
+		<script language="javascript" type="text/javascript" src="../static/bootstrap/js/jquery.min.js"></script>
+		<script language="javascript" type="text/javascript"  src="../static/bootstrap/js/bootstrap.min.js"></script>
+		<script language="javascript" type="text/javascript" src="../static/bootstrap/js/jquery.jqplot.min.js"></script>
+		<script language="javascript" type="text/javascript" src="../static/bootstrap/js/jqplot.canvasAxisLabelRenderer.min.js"></script>
+		<script language="javascript" type="text/javascript" src="../static/bootstrap/js/jqplot.canvasTextRenderer.min.js"></script>
+		<script language="javascript" type="text/javascript" src="../static/bootstrap/js/jqplot.dateAxisRenderer.min.js"></script>	
+		<script language="javascript" type="text/javascript" src="../static/bootstrap/js/jqplot.highlighter.min.js"></script>
+		<script language="javascript" type="text/javascript" src="../static/bootstrap/js/jqplot.cursor.min.js"></script>
+		<script language="javascript" type="text/javascript" src="../static/bootstrap/js/jqplot.canvasAxisTickRenderer.min.js"></script>
+
+		<script type="text/javascript">
+		jQuery(document).ready(function() {
+			var y1 = [];
+			var y2 = [];
+			var y3 = [];
+			var Jdates = [];
+			
+			for(var i = 0; i < ${pyDates}.length; i+=1)
+			{
+				Jdates.push(new Date(${pyDates}[i]));
+				if(${lunches}.length > 0)
+				{
+					y1.push([Jdates[i], ${lunches}[i]]);
+				}
+				if(${dinners}.length > 0)
+				{
+					y2.push([Jdates[i], ${dinners}[i]]);
+				}
+				if(${miscs}.length > 0)
+				{
+					y3.push([Jdates[i], ${miscs}[i]]);
+				}
+			}
+
+			/* solely for debugging!
+			jQuery('#text1').val(y1);
+			*/
+
+			jQuery.jqplot('chart1', [y1], {
+				title:'Lunch Expenses',
+				axesDefaults: {
+						tickRenderer: jQuery.jqplot.CanvasAxisTickRenderer
+					      },
+				axes:{
+					xaxis:{
+						renderer:jQuery.jqplot.DateAxisRenderer, 
+						tickOptions:{formatString:'%b %#d %Y', angle: -45},
+						tickInterval: '1 month'
+					      },
+					yaxis:{
+						tickOptions:{formatString:  '$$%.2f', angle: -45},
+						min: 0,
+						autoscale: true
+					      }
+				     },
+				series:[{lineWidth:4, markerOptions:{style:'square'}}],
+				highlighter:{ show: true, tooltipLocation: 'e' },
+				cursor:{ show: true, tooltipLocation: 'ne' }
+			});
+
+			jQuery.jqplot('chart2', [y2], {
+				title:'Dinner Expenses',
+				axesDefaults: {
+						tickRenderer: jQuery.jqplot.CanvasAxisTickRenderer
+					      },
+				axes:{
+					xaxis:{
+						renderer:jQuery.jqplot.DateAxisRenderer, 
+						tickOptions:{formatString:'%b %#d %Y', angle: -45},
+						tickInterval: '1 month'
+					      },
+					yaxis:{
+						tickOptions:{formatString:  '$$%.2f', angle: -45},
+						min: 0,
+						autoscale: true
+					      }
+				     },
+				series:[{lineWidth:4, markerOptions:{style:'square'}}],
+				highlighter:{ show: true, tooltipLocation: 'e' },
+				cursor:{ show: true, tooltipLocation: 'ne' }
+			});
+
+			jQuery.jqplot('chart3', [y3], {
+				title:'Miscellaneous Expenses',
+				axesDefaults: {
+						tickRenderer: jQuery.jqplot.CanvasAxisTickRenderer
+					      },
+				axes:{
+					xaxis:{
+						renderer:jQuery.jqplot.DateAxisRenderer, 
+						tickOptions:{formatString:'%b %#d %Y', angle: -45},
+						tickInterval: '1 month'
+					      },
+					yaxis:{
+						tickOptions:{formatString:  '$$%.2f', angle: -45},
+						min: 0,
+						autoscale: true
+					      }
+				     },
+				series:[{lineWidth:4, markerOptions:{style:'square'}}],
+				highlighter:{ show: true, tooltipLocation: 'e' },
+				cursor:{ show: true, tooltipLocation: 'ne' }
+			});
+
+		});
+		</script>
+	 
+	</head>
+	<body>
+    		<div class="bs-example" style="margin:20px">
+        		<table class="table table-striped">
+            			<thead>
+                			<tr>
+                 			<th>Date</th>
+                    			<th>Lunch</th>
+                    			<th>Dinner</th>
+                    			<th>Miscellaneous</th>
+                			</tr>
+            			</thead>
+            			<tbody>
+                			$for row in CSVrows:
+                				<tr>
+                    				<td>$row[0]</td>
+                    				<td>$row[1]</td>
+                    				<td>$row[2]</td>
+                    				<td>$row[3]</td>
+                				</tr>
+						
+						<tr>
+						<td></td>
+					$if Ltot_thisMonth:	
+						<td>Lunch (this month) = &#36;$Ltot_thisMonth <br> Lunch (all months) = &#36;$Ltot_All</td>
+					$if Dtot_thisMonth:
+						<td>Dinner (this month) = &#36;$Dtot_thisMonth <br> Dinner (all months) = &#36;$Dtot_All</td>
+					$if Mtot_thisMonth:
+						<td>Miscellaneous (this month) = &#36;$Mtot_thisMonth <br> Miscellaneous (all months) = &#36;$Mtot_All</td>	
+						</tr>	
+				</tbody>
+        		</table>
+		</div>
+
+		<!--input type="text" id="text1" style="margin:20px"/-->
+
+		<div id="chart1" style="margin:100px;width:600px;height:300px"></div>
+		<div id="chart2" style="margin:100px;width:600px;height:300px"></div>
+		<div id="chart3" style="margin:100px;width:600px;height:300px"></div>
+
+	</body>
+</html>
