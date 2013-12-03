@@ -1,4 +1,4 @@
-$def with (M, D, Y, pyDates, lunches, dinners, miscs, CSVrows, Ltot_thisMonth, Dtot_thisMonth, Mtot_thisMonth, Ltot_All, Dtot_All, Mtot_All)
+$def with (pyDates, lunches, dinners, miscs, CSVrows, Ltot_thisMonth, Dtot_thisMonth, Mtot_thisMonth, Ltot_All, Dtot_All, Mtot_All)
 
 <!DOCTYPE html>
 <html lang="en">
@@ -14,9 +14,9 @@ $def with (M, D, Y, pyDates, lunches, dinners, miscs, CSVrows, Ltot_thisMonth, D
         	<!-- Bootstrap core CSS -->
 		<link href="../static/bootstrap/css/bootstrap.css" rel="stylesheet">
 
-		<script language="javscript" type="text/javascript" src="../static/bootstrap/js/jquery.js"></script>
-		<script language="javascript" type="text/javascript" src="../static/bootstrap/js/jquery.min.js"></script>
-		<script language="javascript" type="text/javascript"  src="../static/bootstrap/js/bootstrap.min.js"></script>
+		<!--script language="javascript" type="text/javascript" src="../static/bootstrap/js/jquery.js"></script-->
+		<script language="javascript" type="text/javascript" src="../static/bootstrap/js/jquery-1.7.1.min.js"></script>
+		<!--script language="javascript" type="text/javascript"  src="../static/bootstrap/js/bootstrap.min.js"></script-->
 		<script language="javascript" type="text/javascript" src="../static/bootstrap/js/jquery.jqplot.min.js"></script>
 		<script language="javascript" type="text/javascript" src="../static/bootstrap/js/jqplot.canvasAxisLabelRenderer.min.js"></script>
 		<script language="javascript" type="text/javascript" src="../static/bootstrap/js/jqplot.canvasTextRenderer.min.js"></script>
@@ -24,6 +24,8 @@ $def with (M, D, Y, pyDates, lunches, dinners, miscs, CSVrows, Ltot_thisMonth, D
 		<script language="javascript" type="text/javascript" src="../static/bootstrap/js/jqplot.highlighter.min.js"></script>
 		<script language="javascript" type="text/javascript" src="../static/bootstrap/js/jqplot.cursor.min.js"></script>
 		<script language="javascript" type="text/javascript" src="../static/bootstrap/js/jqplot.canvasAxisTickRenderer.min.js"></script>
+	</head>	
+	<body>
 
 		<script type="text/javascript">
 		jQuery(document).ready(function() {
@@ -32,25 +34,27 @@ $def with (M, D, Y, pyDates, lunches, dinners, miscs, CSVrows, Ltot_thisMonth, D
 			var y3 = [];
 			var Jdates = [];
 			
-			for(var i = 0; i < ${pyDates}.length; i+=1)
-			{
-				Jdates.push(new Date(${pyDates}[i]));
-				if(${lunches}.length > 0)
+            for(var i = 0; i < jQuery($pyDates).length; i+=1)
+            {
+				Jdates.push(new Date(jQuery($pyDates)[i]));
+				if(jQuery($lunches).length > 0)
 				{
-					y1.push([Jdates[i], ${lunches}[i]]);
+					y1.push([Jdates[i], jQuery($lunches)[i]]);
 				}
-				if(${dinners}.length > 0)
+				if(jQuery($dinners).length > 0)
 				{
-					y2.push([Jdates[i], ${dinners}[i]]);
+					y2.push([Jdates[i], jQuery($dinners)[i]]);
 				}
-				if(${miscs}.length > 0)
+				if(jQuery($miscs).length > 0)
 				{
-					y3.push([Jdates[i], ${miscs}[i]]);
+					y3.push([Jdates[i], jQuery($miscs)[i]]);
 				}
 			}
-
 			/* solely for debugging!
+            var data = jQuery($lunches);
+            jQuery('#text1').val(data[0]);
 			jQuery('#text1').val(y1);
+            jQuery.jqplot('charttest', [[1,3]]);
 			*/
 
 			jQuery.jqplot('chart1', [y1], {
@@ -122,8 +126,6 @@ $def with (M, D, Y, pyDates, lunches, dinners, miscs, CSVrows, Ltot_thisMonth, D
 		});
 		</script>
 	 
-	</head>
-	<body>
     		<div class="bs-example" style="margin:20px">
         		<table class="table table-striped">
             			<thead>
@@ -156,11 +158,11 @@ $def with (M, D, Y, pyDates, lunches, dinners, miscs, CSVrows, Ltot_thisMonth, D
         		</table>
 		</div>
 
-		<!--input type="text" id="text1" style="margin:20px"/-->
-
+        <!--input type="text" id="text1" style="margin:100px"-->
+        <!--div id="charttest" style="margin:100px;width:600px;height:300px"></div-->
 		<div id="chart1" style="margin:100px;width:600px;height:300px"></div>
 		<div id="chart2" style="margin:100px;width:600px;height:300px"></div>
 		<div id="chart3" style="margin:100px;width:600px;height:300px"></div>
-
+        
 	</body>
 </html>

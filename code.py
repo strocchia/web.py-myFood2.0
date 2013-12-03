@@ -50,6 +50,11 @@ class index:
 		monthDict={1:'Jan', 2:'Feb', 3:'Mar', 4:'Apr', 5:'May', 6:'Jun', 7:'Jul', 8:'Aug', 9:'Sep', 10:'Oct', 11:'Nov', 12:'Dec'}
 		currentMonth = monthDict[currentMonth]
 		Month = monthDict[int(month)]
+			
+		joined_date = ' '.join([Month, Day, Year])
+		joined_date2 = datetime.datetime.strptime(' '.join([Month, Day, Year]), '%b %d %Y')
+		joined_date2 = float(time.mktime(joined_date2.timetuple())) * 1000 + 86400000	# adding on # of milliseconds in 24 hours (e.g. 1 day)
+		pyDates.append(joined_date2)
 
 		print ""	
 		print "DD immediately after POST called: %s" % double_dict
@@ -99,7 +104,8 @@ class index:
 
 			double_dict[user]['CSVrows'] = map(None, double_dict[user]['dateList'], double_dict[user]['lunchList'], double_dict[user]['dinnerList'], double_dict[user]['miscList'])
 	
-			return render.returned_data_bootstrap_jquery(currentMonth, double_dict[user]['CSVrows'], double_dict[user]['Ltot_thisMonth'], double_dict[user]['Dtot_thisMonth'], double_dict[user]['Mtot_thisMonth'], double_dict[user]['Ltot_All'], double_dict[user]['Dtot_All'], double_dict[user]['Mtot_All'])
+			return render.returned_data_bootstrap_jquery(pyDates, double_dict[user]['lunchList'], double_dict[user]['dinnerList'], double_dict[user]['miscList'], double_dict[user]['CSVrows'], double_dict[user]['Ltot_thisMonth'], double_dict[user]['Dtot_thisMonth'], double_dict[user]['Mtot_thisMonth'], double_dict[user]['Ltot_All'], double_dict[user]['Dtot_All'], double_dict[user]['Mtot_All'])
+			
 			print "DD CSVrows after undo: %s" % double_dict[user]['CSVrows']
 	
 		elif allFormInputs.buttonDo == "Get CSV":
@@ -112,8 +118,6 @@ class index:
 			LDM = allFormInputs.LDM
 			LDM = float(LDM)	
 			
-			joined_date = ' '.join([Month, Day, Year])
-
 			print 'DD b4: %s' % double_dict
 
 			if not user in double_dict:
@@ -162,12 +166,8 @@ class index:
 			print 'DD CSVrows: %s' % double_dict[user]['CSVrows']
 			print ""			
 	
-			joined_date2 = datetime.datetime.strptime(' '.join([Month, Day, Year]), '%b %d %Y')
-			joined_date2 = int(time.mktime(joined_date2.timetuple())) * 1000 + 100000000
-			pyDates.append(joined_date2)
-
 			trial_date = datetime.datetime.today()
-			trial_date = int(time.mktime(trial_date.timetuple())) * 1000
+			trial_date = float(time.mktime(trial_date.timetuple())) * 1000
 			trial_dates.append(trial_date)
 		
 			# debugging
@@ -177,7 +177,7 @@ class index:
 			print "json pyDates: %s" % json.dumps(pyDates)
 			print ""
 
-			return render.returned_data_bootstrap_jquery(month, Day, Year, pyDates, double_dict[user]['lunchList'], double_dict[user]['dinnerList'], double_dict[user]['miscList'], double_dict[user]['CSVrows'], double_dict[user]['Ltot_thisMonth'], double_dict[user]['Dtot_thisMonth'], double_dict[user]['Mtot_thisMonth'], double_dict[user]['Ltot_All'], double_dict[user]['Dtot_All'], double_dict[user]['Mtot_All'])
+			return render.returned_data_bootstrap_jquery(pyDates, double_dict[user]['lunchList'], double_dict[user]['dinnerList'], double_dict[user]['miscList'], double_dict[user]['CSVrows'], double_dict[user]['Ltot_thisMonth'], double_dict[user]['Dtot_thisMonth'], double_dict[user]['Mtot_thisMonth'], double_dict[user]['Ltot_All'], double_dict[user]['Dtot_All'], double_dict[user]['Mtot_All'])
 
 	def GET(self):
 		return render.init_form_bootstrap_jquery(0)
