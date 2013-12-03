@@ -131,6 +131,7 @@ def init_form_bootstrap_jquery (clearFlag):
     extend_([u'                        <br></br>\n'])
     extend_([u'                        <br></br>\n'])
     extend_([u'                        <b>INSTRUCTIONS:</b>\n'])
+    extend_([u'                        <br>Note that you must enter your username first (before performing any of the following operations).\n'])
     extend_([u'                        <br>- Submit: submits your entire form\n'])
     extend_([u'                        <br>-- Clear: clears your entire personal database\n'])
     extend_([u'                        <br>--- Undo: clears the last entry for a particular chosen meal type\n'])
