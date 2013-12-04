@@ -48,15 +48,11 @@ $def with (py_L_Dates, py_D_Dates, py_M_Dates, lunches, dinners, miscs, CSVrows,
 				y3.push([new Date(jQuery($py_M_Dates)[i]), jQuery($miscs)[i]]);
 			}
 			
-            		/*var data = jQuery($lunches);
-            		jQuery('#text1').val(data[0]);
-			jQuery('#text1').val(y1);
-            		jQuery.jqplot('charttest', [[1,3]]);
-			*/
-
-			jQuery('#text1').val([y1]);
+			// debugging only
+			/*jQuery('#text1').val([y1]);
 			jQuery('#text2').val([y2]);
 			jQuery('#text3').val([y3]);
+			*/
 
 			jQuery.jqplot('chart1', [y1], {
 				title:'Lunch Expenses',

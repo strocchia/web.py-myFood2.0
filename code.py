@@ -205,5 +205,5 @@ class getcsv:
 		return csv_file.getvalue()
 
 
-app = app.run()
-#app = app.gaerun()
+#app = app.run()
+app = app.gaerun()
