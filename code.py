@@ -23,8 +23,9 @@ app = web.application(urls, globals())
 #users_store = web.session.Session(app, web.session.DiskStore('users_store'), initializer={'double_dict': defaultdict(dict)})
 
 double_dict = defaultdict(dict)
-trial_dates = []
-pyDates = []
+py_L_Dates = []
+py_D_Dates = []
+py_M_Dates = []
 
 class index:
 
@@ -32,9 +33,7 @@ class index:
 		allFormInputs = web.input()
 		print allFormInputs
 
-		global user 
-		#global clearFlag
-		clearFlag = 0
+		global user, py_L_Dates, py_D_Dates, py_M_Dates 
 		mealType = ""
 		
 		user = allFormInputs.Username
@@ -53,15 +52,22 @@ class index:
 			
 		joined_date = ' '.join([Month, Day, Year])
 		joined_date2 = datetime.datetime.strptime(' '.join([Month, Day, Year]), '%b %d %Y')
-		joined_date2 = float(time.mktime(joined_date2.timetuple())) * 1000 + 86400000	# adding on # of milliseconds in 24 hours (e.g. 1 day)
-		pyDates.append(joined_date2)
+		joined_date2 = float(time.mktime(joined_date2.timetuple())) * 1000
+		if(mealType == "Lunch"):
+			py_L_Dates.append(joined_date2)
+		elif(mealType == "Dinner"):
+			py_D_Dates.append(joined_date2)
+		else:
+			py_M_Dates.append(joined_date2)
 
 		print ""	
 		print "DD immediately after POST called: %s" % double_dict
 
 		if allFormInputs.buttonDo == "Clear your database":
 			print "In the clear"
-			clearFlag = 1
+			py_L_Dates = []
+			py_D_Dates = []
+			py_M_Dates = []
 			double_dict[user].clear()
 			double_dict[user]['dateList'] = []
 			double_dict[user]['lunchList'] = []
@@ -76,7 +82,7 @@ class index:
 			double_dict[user]['Mtot_All'] = 0.00
 			clearMessage = "Your personal meal expense database is cleared!"
 			print "DD after clear: %s" % double_dict
-			return render.init_form_bootstrap_jquery(clearFlag)
+			return render.init_form_bootstrap_jquery(1)
 
 		elif allFormInputs.buttonDo == "Undo last entry":
 			print "Undo phase"
@@ -85,6 +91,7 @@ class index:
 				last_L_entry = float(double_dict[user]['Ltot_All'])
 				double_dict[user]['lunchList'] = double_dict[user]['lunchList'][:-1]
 				double_dict[user]['Ltot_All'] -= last_L_entry
+				py_L_Dates = py_L_Dates[:-2]
 				if Month == currentMonth:
 					double_dict[user]['Ltot_thisMonth'] -= last_L_entry
 			if mealType == "Dinner":
@@ -92,6 +99,7 @@ class index:
 				last_D_entry = float(double_dict[user]['Dtot_All'])
 				double_dict[user]['dinnerList'] = double_dict[user]['dinnerList'][:-1]
 				double_dict[user]['Dtot_All'] -= last_D_entry
+				py_D_Dates = py_D_Dates[:-2]	
 				if Month == currentMonth:
 					double_dict[user]['Dtot_thisMonth'] -= last_D_entry
 			if mealType == "Miscellaneous":
@@ -99,12 +107,17 @@ class index:
 				last_M_entry = float(double_dict[user]['Mtot_All'])
 				double_dict[user]['miscList'] = double_dict[user]['miscList'][:-1]
 				double_dict[user]['Mtot_All'] -= last_M_entry
+				py_M_Dates = py_M_Dates[:-2]	
 				if Month == currentMonth:
 					double_dict[user]['Mtot_thisMonth'] -= last_M_entry
 
+			print "py_L_Dates after undo: %s" % py_L_Dates
+			print "py_D_Dates after undo: %s" % py_D_Dates
+			print "py_M_Dates after undo: %s" % py_M_Dates
+			
 			double_dict[user]['CSVrows'] = map(None, double_dict[user]['dateList'], double_dict[user]['lunchList'], double_dict[user]['dinnerList'], double_dict[user]['miscList'])
 	
-			return render.returned_data_bootstrap_jquery(pyDates, double_dict[user]['lunchList'], double_dict[user]['dinnerList'], double_dict[user]['miscList'], double_dict[user]['CSVrows'], double_dict[user]['Ltot_thisMonth'], double_dict[user]['Dtot_thisMonth'], double_dict[user]['Mtot_thisMonth'], double_dict[user]['Ltot_All'], double_dict[user]['Dtot_All'], double_dict[user]['Mtot_All'])
+			return render.returned_data_bootstrap_jquery(py_L_Dates, py_D_Dates, py_M_Dates, double_dict[user]['lunchList'], double_dict[user]['dinnerList'], double_dict[user]['miscList'], double_dict[user]['CSVrows'], double_dict[user]['Ltot_thisMonth'], double_dict[user]['Dtot_thisMonth'], double_dict[user]['Mtot_thisMonth'], double_dict[user]['Ltot_All'], double_dict[user]['Dtot_All'], double_dict[user]['Mtot_All'])
 			
 			print "DD CSVrows after undo: %s" % double_dict[user]['CSVrows']
 	
@@ -166,18 +179,9 @@ class index:
 			print 'DD CSVrows: %s' % double_dict[user]['CSVrows']
 			print ""			
 	
-			trial_date = datetime.datetime.today()
-			trial_date = float(time.mktime(trial_date.timetuple())) * 1000
-			trial_dates.append(trial_date)
-		
-			# debugging
-			print "trial dates: %s" % trial_dates
-			print "json trial dates: %s" % json.dumps(trial_dates)
-			print "pyDates: %s" % pyDates
-			print "json pyDates: %s" % json.dumps(pyDates)
 			print ""
 
-			return render.returned_data_bootstrap_jquery(pyDates, double_dict[user]['lunchList'], double_dict[user]['dinnerList'], double_dict[user]['miscList'], double_dict[user]['CSVrows'], double_dict[user]['Ltot_thisMonth'], double_dict[user]['Dtot_thisMonth'], double_dict[user]['Mtot_thisMonth'], double_dict[user]['Ltot_All'], double_dict[user]['Dtot_All'], double_dict[user]['Mtot_All'])
+			return render.returned_data_bootstrap_jquery(py_L_Dates, py_D_Dates, py_M_Dates, double_dict[user]['lunchList'], double_dict[user]['dinnerList'], double_dict[user]['miscList'], double_dict[user]['CSVrows'], double_dict[user]['Ltot_thisMonth'], double_dict[user]['Dtot_thisMonth'], double_dict[user]['Mtot_thisMonth'], double_dict[user]['Ltot_All'], double_dict[user]['Dtot_All'], double_dict[user]['Mtot_All'])
 
 	def GET(self):
 		return render.init_form_bootstrap_jquery(0)
@@ -189,15 +193,6 @@ class getcsv:
 	def GET(self):
 		global user
 		
-		#global clearFlag
-		#singularFormInput = web.input()
-		#userLocal = singularFormInput.user
-
-		#if clearFlag == 1:
-		#	nothingMessage = "You have not entered any data into your personal CSV file!"
-		#	return render.nothing_to_show(nothingMessage)
-		
-		#else:
 		csv_file = StringIO()
 		csv_writer = csv.writer(csv_file)
 		csv_writer.writerow(['Date', 'Lunch', 'Dinner', 'Miscellaneous'])
@@ -210,5 +205,5 @@ class getcsv:
 		return csv_file.getvalue()
 
 
-#app = app.run()
-app = app.gaerun()
+app = app.run()
+#app = app.gaerun()
