@@ -3,6 +3,7 @@ from web import form
 web.config.debug = False
 import datetime
 import time
+import calendar
 import csv
 from StringIO import StringIO
 from collections import defaultdict
@@ -33,7 +34,7 @@ class index:
 		allFormInputs = web.input()
 		print allFormInputs
 
-		global user, py_L_Dates, py_D_Dates, py_M_Dates 
+		global user, py_L_Dates, py_D_Dates, py_M_Dates
 		mealType = ""
 		
 		user = allFormInputs.Username
@@ -51,14 +52,24 @@ class index:
 		Month = monthDict[int(month)]
 			
 		joined_date = ' '.join([Month, Day, Year])
-		joined_date2 = datetime.datetime.strptime(' '.join([Month, Day, Year]), '%b %d %Y')
-		joined_date2 = float(time.mktime(joined_date2.timetuple())) * 1000
+		
+		## DELETED -- instead I convert the date in Javascript, which appears to be more accurate
+		#joined_date2 = datetime.datetime.strptime(' '.join([Month, Day, Year, str(datetime.datetime.now().hour), str(datetime.datetime.now().minute)]), '%b %d %Y %H %M')
+		#joined_date2 = time.mktime(joined_date2.timetuple()) * 1000
+
 		if(mealType == "Lunch"):
-			py_L_Dates.append(joined_date2)
+			#py_L_Dates.append(joined_date2)	# old
+			py_L_Dates.append(str(joined_date))
 		elif(mealType == "Dinner"):
-			py_D_Dates.append(joined_date2)
+			#py_D_Dates.append(joined_date2)	# old
+			py_D_Dates.append(str(joined_date))
 		else:
-			py_M_Dates.append(joined_date2)
+			#py_M_Dates.append(joined_date2)	# old
+			py_M_Dates.append(str(joined_date))
+
+		print "py_L_Dates: %s" % py_L_Dates
+		print "py_D_Dates: %s" % py_D_Dates
+		print "py_M_Dates: %s" % py_M_Dates
 
 		print ""	
 		print "DD immediately after POST called: %s" % double_dict
@@ -111,10 +122,6 @@ class index:
 				if Month == currentMonth:
 					double_dict[user]['Mtot_thisMonth'] -= last_M_entry
 
-			print "py_L_Dates after undo: %s" % py_L_Dates
-			print "py_D_Dates after undo: %s" % py_D_Dates
-			print "py_M_Dates after undo: %s" % py_M_Dates
-			
 			double_dict[user]['CSVrows'] = map(None, double_dict[user]['dateList'], double_dict[user]['lunchList'], double_dict[user]['dinnerList'], double_dict[user]['miscList'])
 	
 			return render.returned_data_bootstrap_jquery(py_L_Dates, py_D_Dates, py_M_Dates, double_dict[user]['lunchList'], double_dict[user]['dinnerList'], double_dict[user]['miscList'], double_dict[user]['CSVrows'], double_dict[user]['Ltot_thisMonth'], double_dict[user]['Dtot_thisMonth'], double_dict[user]['Mtot_thisMonth'], double_dict[user]['Ltot_All'], double_dict[user]['Dtot_All'], double_dict[user]['Mtot_All'])
@@ -178,9 +185,7 @@ class index:
 				
 			print 'DD CSVrows: %s' % double_dict[user]['CSVrows']
 			print ""			
-	
-			print ""
-
+			
 			return render.returned_data_bootstrap_jquery(py_L_Dates, py_D_Dates, py_M_Dates, double_dict[user]['lunchList'], double_dict[user]['dinnerList'], double_dict[user]['miscList'], double_dict[user]['CSVrows'], double_dict[user]['Ltot_thisMonth'], double_dict[user]['Dtot_thisMonth'], double_dict[user]['Mtot_thisMonth'], double_dict[user]['Ltot_All'], double_dict[user]['Dtot_All'], double_dict[user]['Mtot_All'])
 
 	def GET(self):

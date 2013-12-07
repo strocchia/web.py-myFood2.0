@@ -32,27 +32,31 @@ $def with (py_L_Dates, py_D_Dates, py_M_Dates, lunches, dinners, miscs, CSVrows,
 			var y1 = [];
 			var y2 = [];
 			var y3 = [];
-			
-            		for(var i = 0; i < jQuery($py_L_Dates).length; i+=1)
+
+			// THE THING I WAS MISSING BEFORE (TO CONVERT A STRING DATE FROM PYTHON TO A RECOGNIZABLE DATE IN JAVASCRIPT) WAS ':$' ... I DIDN'T KNOW I HAD TO PUT THE COLON!!!
+			for(var i = 0; i < jQuery($lunches).length; i+=1)
             		{
-				y1.push([new Date(jQuery($py_L_Dates)[i]), jQuery($lunches)[i]]);
+				var a = new Date(jQuery($:py_L_Dates)[i]);
+				y1.push([a, jQuery($lunches)[i]]);
 			}
 			
-            		for(var i = 0; i < jQuery($py_D_Dates).length; i+=1)
+			
+            		for(var i = 0; i < jQuery($dinners).length; i+=1)
             		{
-				y2.push([new Date(jQuery($py_D_Dates)[i]), jQuery($dinners)[i]]);
+				var b = new Date(jQuery($:py_D_Dates)[i]);
+				y2.push([b, jQuery($dinners)[i]]);
 			}
 			
-            		for(var i = 0; i < jQuery($py_M_Dates).length; i+=1)
+            		for(var i = 0; i < jQuery($miscs).length; i+=1)
             		{
-				y3.push([new Date(jQuery($py_M_Dates)[i]), jQuery($miscs)[i]]);
+				var c = new Date(jQuery($:py_M_Dates)[i]);
+				y3.push([c, jQuery($miscs)[i]]);
 			}
 			
 			// debugging only
-			/*jQuery('#text1').val([y1]);
-			jQuery('#text2').val([y2]);
-			jQuery('#text3').val([y3]);
-			*/
+			//jQuery('#text1').val([y1]);
+			//jQuery('#text2').val(b);
+			//jQuery('#text3').val();
 
 			jQuery.jqplot('chart1', [y1], {
 				title:'Lunch Expenses',
@@ -157,8 +161,8 @@ $def with (py_L_Dates, py_D_Dates, py_M_Dates, lunches, dinners, miscs, CSVrows,
 
         	<!--input type="text" id="text1" style="margin:100px">
 		<input type="text" id="text2" style="margin:100px">
-		<input type="text" id="text3" style="margin:100px"-->	
-		
+		<input type="text" id="text3" style="margin:100px"-->
+
 		<div id="chart1" style="margin:100px;width:600px;height:300px"></div>
 		<div id="chart2" style="margin:100px;width:600px;height:300px"></div>
 		<div id="chart3" style="margin:100px;width:600px;height:300px"></div>
